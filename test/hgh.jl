@@ -96,7 +96,7 @@ end
     rmax = 20.0
     kmax = 500.0
     ℓmax = 4
-    r = collect(logrange(rmin, rmax, N))
+    r = collect(_logrange(rmin, rmax, N))
     plan = SBTPlan{Float64}(r, ℓmax, kmax)
     for family_name in HGH_FAMILIES
         @testset "$(family_name)" begin

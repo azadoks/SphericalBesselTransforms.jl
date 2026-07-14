@@ -3,6 +3,7 @@ using PseudoPotentialData
 using PseudoPotentialIO
 using CairoMakie
 using SphericalBesselTransforms
+using SphericalBesselTransforms: _logrange
 
 # Implementation of HGH pseudopotential quantities, stolen from DFTK.jl
 include("hgh.jl")
@@ -10,7 +11,7 @@ include("hgh.jl")
 family = PseudoFamily("cp2k.nc.sr.lda.v0_1.largecore.gth")
 pspfile = HghFile(family[:Si])
 
-r = collect(logrange(1.0 / 1024 / 32, 20.0, 512))
+r = collect(_logrange(1.0 / 1024 / 32, 20.0, 512))
 plan = SBTPlan{Float64}(r, pspfile.lmax, 500.0)
 
 begin

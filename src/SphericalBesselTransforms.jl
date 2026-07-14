@@ -10,6 +10,9 @@ export sbt!
 export sbt
 export sbtfreq
 
+# `Base.logrange` only exists from Julia 1.11 on, and we still support 1.10 (the LTS).
+_logrange(lo, hi, n) = exp.(range(log(lo), log(hi), n))
+
 @inbounds function construct_Mℓ_t(ℓmax, nr, Δt, κmin, ρmin, Δρ)
     t = collect(0:(nr - 1)) * Δt
     Mℓ_t = zeros(Complex{Float64}, nr, ℓmax + 1)
@@ -49,7 +52,7 @@ end
 Return the `k` values corresponding to a logarithmic grid `r`.
 """
 function sbtfreq(r, kmax = 500)
-    if !all(r .≈ logrange(minimum(r), maximum(r), length(r)))
+    if !all(r .≈ _logrange(minimum(r), maximum(r), length(r)))
         error("Input r must be logarithmically spaced")
     end
     ρmin = log(minimum(r))
@@ -88,7 +91,7 @@ struct SBTPlan{T}
 end
 
 function SBTPlan{T}(r::AbstractVector{T}, ℓmax::Int = 10, kmax::T = 500) where {T}
-    if !all(r .≈ logrange(minimum(r), maximum(r), length(r)))
+    if !all(r .≈ _logrange(minimum(r), maximum(r), length(r)))
         error("Input r must be logarithmically spaced")
     end
     nr = length(r)
