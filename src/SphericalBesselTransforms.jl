@@ -49,7 +49,12 @@ end
 Return the `k` values corresponding to a logarithmic grid `r`.
 """
 function sbtfreq(r, kmax = 500)
-    if !all(r .≈ logrange(minimum(r), maximum(r), length(r)))
+    @static if VERSION < v"1.11"
+        gridcheck = all(r .≈ exp.(range(log(first(r)), log(last(r)), length(r))))
+    else
+        gridcheck = all(r .≈ logrange(minimum(r), maximum(r), length(r)))
+    end
+    if !gridcheck
         error("Input r must be logarithmically spaced")
     end
     ρmin = log(minimum(r))
@@ -88,7 +93,12 @@ struct SBTPlan{T}
 end
 
 function SBTPlan{T}(r::AbstractVector{T}, ℓmax::Int = 10, kmax::T = 500) where {T}
-    if !all(r .≈ logrange(minimum(r), maximum(r), length(r)))
+    @static if VERSION < v"1.11"
+        gridcheck = all(r .≈ exp.(range(log(first(r)), log(last(r)), length(r))))
+    else
+        gridcheck = all(r .≈ logrange(minimum(r), maximum(r), length(r)))
+    end
+    if !gridcheck
         error("Input r must be logarithmically spaced")
     end
     nr = length(r)
